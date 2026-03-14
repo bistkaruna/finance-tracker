@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+{% block title %}Categories - Finance Tracker{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 style="font-size: 24px; margin: 0;">Categories</h1>
+    <a href="{% url 'category_create' %}" class="btn btn-primary">+ Add Category</a>
+</div>
+
+{% if categories %}
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Transactions</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td class="fw-bold">{{ category.name }}</td>
+                    <td>
+                        {% if category.type == 'INCOME' %}
+                        <span class="badge badge-success">Income</span>
+                        {% else %}
+                        <span class="badge badge-danger">Expense</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ category.description|default:"—"|truncatechars:50 }}</td>
+                    <td><span class="badge badge-secondary">{{ category.transaction_count }}</span></td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'category_update' category.pk %}" class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px; margin-right: 5px;">Edit</a>
+                        <a href="{% url 'category_delete' category.pk %}" class="btn btn-danger" style="padding: 4px 8px; font-size: 12px;">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body" style="text-align: center; padding: 60px 20px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">🏷️</div>
+        <h3>No categories found</h3>
+        <p style="color: #6b7280; margin-bottom: 20px;">Start by adding your first category</p>
+        <a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a>
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+{% endblock %}

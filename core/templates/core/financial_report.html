@@ -1,0 +1,95 @@
+{% extends 'core/base.html' %}
+{% block title %}Financial Reports - Finance Tracker{% endblock %}
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h1 style="font-size: 28px; margin-bottom: 10px;">Financial Reports</h1>
+    <p style="color: #6b7280;">Overview of your financial activities</p>
+</div>
+
+<!-- Summary Cards -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+    <div style="background: linear-gradient(135deg, #16a34a, #22c55e); color: white; padding: 20px; border-radius: 8px;">
+        <div style="font-size: 14px; margin-bottom: 5px;">Monthly Income</div>
+        <div style="font-size: 28px; font-weight: bold;">Rs. {{ monthly_summary.income|floatformat:2 }}</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; padding: 20px; border-radius: 8px;">
+        <div style="font-size: 14px; margin-bottom: 5px;">Monthly Expense</div>
+        <div style="font-size: 28px; font-weight: bold;">Rs. {{ monthly_summary.expense|floatformat:2 }}</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 20px; border-radius: 8px;">
+        <div style="font-size: 14px; margin-bottom: 5px;">Monthly Balance</div>
+        <div style="font-size: 28px; font-weight: bold;">Rs. {{ monthly_summary.balance|floatformat:2 }}</div>
+    </div>
+</div>
+
+<!-- Category Breakdown & Monthly Trends -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+    <div class="card">
+        <div class="card-header">
+            <h3 style="margin: 0;">Category Breakdown</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th style="text-align: right;">Amount (Rs.)</th>
+                        <th style="text-align: right;">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in category_data %}
+                    <tr>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            {% if category.type == 'Income' %}
+                            <span class="badge badge-success">Income</span>
+                            {% else %}
+                            <span class="badge badge-danger">Expense</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right;">Rs. {{ category.amount|floatformat:2 }}</td>
+                        <td style="text-align: right;">{{ category.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 style="margin: 0;">Monthly Trends</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th style="text-align: right;">Income</th>
+                        <th style="text-align: right;">Expense</th>
+                        <th style="text-align: right;">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in months_data %}
+                    <tr>
+                        <td>{{ month.month }}</td>
+                        <td style="text-align: right; color: #16a34a;">Rs. {{ month.income|floatformat:2 }}</td>
+                        <td style="text-align: right; color: #dc2626;">Rs. {{ month.expense|floatformat:2 }}</td>
+                        <td style="text-align: right; {% if month.balance >= 0 %}color: #2563eb{% else %}color: #f59e0b{% endif %};">
+                            Rs. {{ month.balance|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px; text-align: center;">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+{% endblock %}

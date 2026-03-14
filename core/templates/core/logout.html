@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% block title %}Logout - Finance Tracker{% endblock %}
+{% block content %}
+<div style="max-width: 400px; margin: 80px auto;">
+    <div class="card" style="border: 2px solid #dc2626;">
+        <div class="card-header" style="background: #dc2626; color: white; text-align: center;">
+            <h3 style="margin: 0;">Confirm Logout</h3>
+        </div>
+        <div class="card-body text-center">
+            <div style="font-size: 48px; margin-bottom: 20px;">👋</div>
+            <h4 style="margin-bottom: 15px;">Are you sure you want to logout?</h4>
+            <p style="color: #6b7280; margin-bottom: 25px;">You'll need to login again to access your financial data.</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div style="display: flex; justify-content: center; gap: 15px;">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Yes, Logout</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

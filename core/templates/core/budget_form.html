@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ title }} - Finance Tracker{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header" style="background: #2563eb; color: white;">
+            <h3 style="margin: 0;">{{ title }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" onsubmit="return validateBudgetForm()">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Category <span style="color: #dc2626;">*</span></label>
+                    <select name="category" class="form-control" required>
+                        <option value="">-- Select Category --</option>
+                        <option value="1"> Salary</option>
+                        <option value="2"> Business</option>
+                        <option value="3"> Investment</option>
+                        <option value="4"> Rent</option>
+                        <option value="5"> Gift</option>
+                        <option value="6"> Freelance</option>
+                        <option value="7"> Bonus</option>
+                        <option value="8"> Refund</option>
+                        <option value="9"> Dividend</option>
+                        <option value="10"> Prize</option>
+                        <option value="11"> Consulting</option>
+                        <option value="12"> Allowance</option>
+                        <option value="13"> Commission</option>
+                        <option value="14"> Interest</option>
+                        <option value="15"> Other Income</option>
+                        <option value="16"> Food & Dining</option>
+                        <option value="17"> Transportation</option>
+                        <option value="18"> Rent/Utilities</option>
+                        <option value="19"> Shopping</option>
+                        <option value="20"> Entertainment</option>
+                        <option value="21"> Healthcare</option>
+                        <option value="22"> Education</option>
+                        <option value="23"> Travel</option>
+                        <option value="24"> Fitness</option>
+                        <option value="25"> Pets</option>
+                        <option value="26"> Insurance</option>
+                        <option value="27"> Mobile/Internet</option>
+                        <option value="28"> Personal Care</option>
+                        <option value="29"> Gifts</option>
+                        <option value="30">💵 Other Expenses</option>
+                    </select>
+                    {% if form.category.errors %}
+                    <div class="error-text">{{ form.category.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Amount (Rs.) <span style="color: #dc2626;">*</span></label>
+                    <input type="text" name="amount" class="form-control" id="amountInput" value="{{ form.amount.value|default:'' }}" required
+                           onkeypress="return onlyNumbers(event)" oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
+                    {% if form.amount.errors %}
+                    <div class="error-text">{{ form.amount.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Period <span style="color: #dc2626;">*</span></label>
+                    <select name="period" class="form-control" required>
+                        <option value="">-- Select Period --</option>
+                        <option value="MONTHLY" {% if form.period.value == 'MONTHLY' %}selected{% endif %}>Monthly</option>
+                        <option value="QUARTERLY" {% if form.period.value == 'QUARTERLY' %}selected{% endif %}>Quarterly</option>
+                        <option value="YEARLY" {% if form.period.value == 'YEARLY' %}selected{% endif %}>Yearly</option>
+                    </select>
+                    {% if form.period.errors %}
+                    <div class="error-text">{{ form.period.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Start Date <span style="color: #dc2626;">*</span></label>
+                        <input type="date" name="start_date" class="form-control" value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}" required>
+                        {% if form.start_date.errors %}
+                        <div class="error-text">{{ form.start_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}">
+                        {% if form.end_date.errors %}
+                        <div class="error-text">{{ form.end_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <div class="error-text">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <a href="{% url 'budget_list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function onlyNumbers(e) {
+    var charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+}
+
+function validateBudgetForm() {
+    var amount = document.getElementById('amountInput').value;
+    if (amount <= 0) {
+        alert('Amount must be greater than 0');
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}

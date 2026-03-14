@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% block title %}Welcome to Finance Tracker{% endblock %}
+{% block content %}
+<div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #2563eb, #1e40af); color: white; border-radius: 8px; margin-bottom: 40px;">
+    <h1 style="font-size: 48px; margin-bottom: 20px;">Take Control of Your Finances</h1>
+    <p style="font-size: 18px; max-width: 600px; margin: 0 auto 30px;">Track expenses, set goals, and achieve financial freedom with our intuitive finance tracker.</p>
+    
+    {% if not user.is_authenticated %}
+    <div style="display: flex; gap: 20px; justify-content: center;">
+        <a href="{% url 'register' %}" class="btn btn-success" style="font-size: 18px; padding: 12px 30px;">Get Started Free</a>
+        <a href="{% url 'login' %}" class="btn btn-primary" style="font-size: 18px; padding: 12px 30px; background: white; color: #2563eb;">Login</a>
+    </div>
+    {% else %}
+    <div>
+        <a href="{% url 'dashboard' %}" class="btn btn-success" style="font-size: 18px; padding: 12px 30px;">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+    <div style="text-align: center; padding: 30px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
+        <h3 style="margin-bottom: 10px;">Transaction Tracking</h3>
+        <p style="color: #6b7280;">Record all income and expenses with detailed categories and descriptions.</p>
+    </div>
+    <div style="text-align: center; padding: 30px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">🎯</div>
+        <h3 style="margin-bottom: 10px;">Goal Setting</h3>
+        <p style="color: #6b7280;">Set financial goals and track your progress with visual indicators.</p>
+    </div>
+    <div style="text-align: center; padding: 30px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+        <h3 style="margin-bottom: 10px;">Financial Reports</h3>
+        <p style="color: #6b7280;">Generate detailed reports and gain insights into your spending habits.</p>
+    </div>
+</div>
+{% endblock %}

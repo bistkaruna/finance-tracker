@@ -1,0 +1,389 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Finance Tracker{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* Header */
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        .admin-link {
+            background: #f97316;
+            color: white;
+            font-weight: 500;
+        }
+        .admin-link:hover {
+            background: #ea580c;
+        }
+        
+        /* User Menu */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+        .username {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+        }
+        .dropdown a {
+            color: #1a1a1a;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+        .dropdown a:hover {
+            background: #f3f4f6;
+        }
+        .user-menu:hover .dropdown {
+            display: block;
+        }
+        
+        /* Messages */
+        .messages {
+            margin-top: 20px;
+        }
+        .message {
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .message-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+        .message-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        .message-warning {
+            background: #fef9c3;
+            color: #854d0e;
+            border-left: 4px solid #eab308;
+        }
+        .message-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 40px 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #15803d;
+        }
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success {
+            background: #16a34a;
+            color: white;
+        }
+        .badge-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .badge-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .badge-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: bold;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .error-text {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th {
+            text-align: left;
+            padding: 12px;
+            background: #f9fafb;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        .table tr:hover {
+            background: #f9fafb;
+        }
+        
+        /* Utility */
+        .text-center { text-align: center; }
+        .text-success { color: #16a34a; }
+        .text-danger { color: #dc2626; }
+        .text-muted { color: #6b7280; }
+        .fw-bold { font-weight: bold; }
+        .mt-4 { margin-top: 20px; }
+        .mb-4 { margin-bottom: 20px; }
+        .d-flex { display: flex; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .gap-3 { gap: 15px; }
+        
+        @media (max-width: 768px) {
+            .header .container {
+                flex-direction: column;
+            }
+            .nav {
+                justify-content: center;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'dashboard' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 3h12v2H9.41A5.002 5.002 0 0114 9h4v2h-4a5.002 5.002 0 01-4.59 4H18v2H6v-2h3.41A3.001 3.001 0 0012 11H6V9h6a3.001 3.001 0 00-2.59-2H6V3z"/>
+                    </svg>
+                    Finance Tracker
+                </a>
+            </div>
+            <nav class="nav">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                    <a href="{% url 'transaction_list' %}" class="nav-link">Transactions</a>
+                    <a href="{% url 'goal_list' %}" class="nav-link">Goals</a>
+                    <a href="{% url 'budget_list' %}" class="nav-link">Budgets</a>
+                    <a href="{% url 'financial_report' %}" class="nav-link">Reports</a>
+                    
+                    {% if user.is_superuser or user.is_staff %}
+                    <a href="/admin/" class="nav-link admin-link">Admin</a>
+                    {% endif %}
+                    
+                    <div class="user-menu">
+                        <span class="username">👤 {{ user.username }}</span>
+                        <div class="dropdown">
+                            <a href="{% url 'profile' %}">Profile</a>
+                            <a href="{% url 'change_password' %}">Change Password</a>
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="messages">
+        <div class="container">
+            {% for message in messages %}
+                <div class="message message-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <main class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© {% now "Y" %} Rs. Finance Tracker | BCA Final Project</p>
+        </div>
+    </footer>
+</body>
+</html>

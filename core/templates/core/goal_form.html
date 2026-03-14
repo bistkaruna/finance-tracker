@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ title }} - Finance Tracker{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header" style="background: #2563eb; color: white;">
+            <h3 style="margin: 0;">{{ title }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" onsubmit="return validateGoalForm()">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Goal Name <span style="color: #dc2626;">*</span></label>
+                    <input type="text" name="name" class="form-control" id="nameInput" value="{{ form.name.value|default:'' }}" required
+                           onkeypress="return onlyLettersNumbers(event)">
+                    {% if form.name.errors %}
+                    <div class="error-text">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <div class="error-text">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Target Amount (Rs.) <span style="color: #dc2626;">*</span></label>
+                        <input type="text" name="target_amount" class="form-control" id="targetAmount" value="{{ form.target_amount.value|default:'' }}" required
+                               onkeypress="return onlyNumbers(event)" oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
+                        {% if form.target_amount.errors %}
+                        <div class="error-text">{{ form.target_amount.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Current Amount (Rs.)</label>
+                        <input type="text" name="current_amount" class="form-control" id="currentAmount" value="{{ form.current_amount.value|default:'0' }}"
+                               onkeypress="return onlyNumbers(event)" oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
+                        {% if form.current_amount.errors %}
+                        <div class="error-text">{{ form.current_amount.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Deadline <span style="color: #dc2626;">*</span></label>
+                    <input type="date" name="deadline" class="form-control" value="{{ form.deadline.value|date:'Y-m-d'|default:'' }}" required
+                           min="{{ today|date:'Y-m-d' }}">
+                    {% if form.deadline.errors %}
+                    <div class="error-text">{{ form.deadline.errors.0 }}</div>
+                    {% endif %}
+                    <small style="color: #6b7280;">Future date required</small>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <a href="{% url 'goal_list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Goal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function onlyNumbers(e) {
+    var charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46) {
+        return false;
+    }
+    return true;
+}
+
+function onlyLettersNumbers(e) {
+    var charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && 
+        (charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122) && 
+        charCode != 32) {
+        return false;
+    }
+    return true;
+}
+
+function validateGoalForm() {
+    var target = document.getElementById('targetAmount').value;
+    var current = document.getElementById('currentAmount').value || 0;
+    
+    if (target <= 0) {
+        alert('Target amount must be greater than 0');
+        return false;
+    }
+    if (parseFloat(current) > parseFloat(target)) {
+        alert('Current amount cannot exceed target amount');
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}

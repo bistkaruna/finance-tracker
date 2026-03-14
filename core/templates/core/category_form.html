@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ title }} - Finance Tracker{% endblock %}
+{% block content %}
+<div style="max-width: 500px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header" style="background: #2563eb; color: white;">
+            <h3 style="margin: 0;">{{ title }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">Category Name <span style="color: #dc2626;">*</span></label>
+                    <input type="text" name="name" class="form-control" value="{{ form.name.value|default:'' }}" required
+                           onkeypress="return onlyLettersNumbers(event)"
+                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '')">
+                    {% if form.name.errors %}
+                    <div class="error-text">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Type <span style="color: #dc2626;">*</span></label>
+                    <select name="type" class="form-control" required>
+                        <option value="">Select Type</option>
+                        <option value="INCOME" {% if form.type.value == 'INCOME' %}selected{% endif %}>Income</option>
+                        <option value="EXPENSE" {% if form.type.value == 'EXPENSE' %}selected{% endif %}>Expense</option>
+                    </select>
+                    {% if form.type.errors %}
+                    <div class="error-text">{{ form.type.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <div class="error-text">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <a href="{% url 'category_list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function onlyLettersNumbers(e) {
+    var charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && 
+        (charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122) && 
+        charCode != 32) {
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
